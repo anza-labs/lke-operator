@@ -41,6 +41,7 @@ RUN go build \
 #########################################################################################
 
 # Second stage: building final environment for running the executable.
+# hadolint ignore=DL3007
 FROM gcr.io/distroless/static:latest AS runtime
 
 # Copy the executable.
