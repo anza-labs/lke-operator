@@ -1,0 +1,11 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "automerge": true,
+  "extends": [ "config:recommended" ],
+  "labels": [
+    "area/dependency"
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true
+  }
+}

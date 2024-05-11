@@ -1,0 +1,11 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: smoke-test
+spec:
+  steps:
+  - try:
+    - apply:
+        file: ./apply.yaml
+    - assert:
+        file: ./assert.yaml

@@ -1,0 +1,27 @@
+# permissions for end users to edit lkeclusterconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: lke-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: lkeclusterconfig-editor-role
+rules:
+- apiGroups:
+  - lke.anza-labs.dev
+  resources:
+  - lkeclusterconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - lke.anza-labs.dev
+  resources:
+  - lkeclusterconfigs/status
+  verbs:
+  - get

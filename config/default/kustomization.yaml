@@ -1,0 +1,6 @@
+namespace: lke-operator-system
+namePrefix: lke-operator-
+resources:
+- ../crd
+- ../rbac
+- ../manager
