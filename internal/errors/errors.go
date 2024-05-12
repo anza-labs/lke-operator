@@ -13,3 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+package errors
+
+import (
+	"errors"
+	"net/http"
+
+	"github.com/linode/linodego"
+)
+
+var (
+	ErrNilSecret    = errors.New("secret is nil")
+	ErrTokenMissing = errors.New("token is missing from secret")
+	ErrNoClusterID  = errors.New("no cluster ID")
+
+	ErrLinodeNotFound = linodego.Error{Code: http.StatusNotFound}
+)

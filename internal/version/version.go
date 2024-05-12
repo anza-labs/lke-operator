@@ -1,5 +1,5 @@
 /*
-Copyright 2024 anza-labs contributors.
+Copyright 2024 lke-operator contributors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,4 +16,10 @@ limitations under the License.
 
 package version
 
-var Version string
+import "runtime"
+
+var (
+	Version string
+	OS      string = runtime.GOOS
+	Arch    string = runtime.GOARCH
+)

@@ -1,12 +1,14 @@
-name: image
+name: image-docs
 
 on:
   push:
+    branches:
+      - "main"
     tags:
       - 'v*'
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -30,3 +32,22 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/${{ github.event.repository.owner.name }}/lke-operator:${{ github.ref_name }}
+          build-args: VERSION=${{ github.ref_name }}
+
+  release-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: fregante/setup-git-user@v2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          check-latest: true
+      - run: |
+          pip install poetry
+      - run: |
+          poetry install
+      - run: |
+          poetry run publish --version "${{ github.ref_name }}"

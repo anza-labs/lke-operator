@@ -1,5 +1,5 @@
 /*
-Copyright 2024 anza-labs contributors.
+Copyright 2024 lke-operator contributors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,8 +28,7 @@ type LKEClusterConfigSpec struct {
 
 	// TokenSecretRef references the Kubernetes secret that stores the Linode API token.
 	// If not provided, then default token will be used.
-	// +kubebuilder:validation:optional
-	TokenSecretRef *SecretRef `json:"string,omitempty"`
+	TokenSecretRef SecretRef `json:"tokenSecretRef"`
 
 	// HighAvailability specifies whether the LKE cluster should be configured for high
 	// availability.
@@ -43,7 +42,7 @@ type LKEClusterConfigSpec struct {
 
 	// KubernetesVersion indicates the Kubernetes version of the LKE cluster.
 	// +kubebuilder:validation:optional
-	// +kubebuilder:default="latest"
+	// +kubebuilder:default=latest
 	KubernetesVersion *string `json:"kubernetesVersion,omitempty"`
 }
 
@@ -56,14 +55,12 @@ type SecretRef struct {
 // LKENodePool represents a pool of nodes within the LKE cluster.
 type LKENodePool struct {
 	// NodeCount specifies the number of nodes in the node pool.
-	// +kubebuilder:validation:optional
 	// +kubebuilder:default=3
-	NodeCount *int `json:"nodeCount,omitempty"`
+	NodeCount int `json:"nodeCount"`
 
 	// LinodeType specifies the Linode instance type for the nodes in the pool.
-	// +kubebuilder:validation:optional
-	// +kubebuilder:default="g6-standard-1"
-	LinodeType *string `json:"linodeType,omitempty"`
+	// +kubebuilder:default=g6-standard-1
+	LinodeType string `json:"linodeType"`
 
 	// Autoscaler specifies the autoscaling configuration for the node pool.
 	// +kubebuilder:validation:optional
@@ -87,11 +84,12 @@ type LKENodePoolAutoscaler struct {
 type LKEClusterConfigStatus struct {
 	// Phase represents the current phase of the LKE cluster.
 	// +kubebuilder:validation:optional
-	Phase string `json:"phase,omitempty"`
+	// +kubebuilder:default=Unknown
+	Phase *Phase `json:"phase,omitempty"`
 
 	// ClusterID contains the ID of the provisioned LKE cluster.
 	// +kubebuilder:validation:optional
-	ClusterID int `json:"clusterID,omitempty"`
+	ClusterID *int `json:"clusterID,omitempty"`
 
 	// NodePoolsIDs contains the IDs of the provisioned node pools within the LKE cluster.
 	// +kubebuilder:validation:optional
@@ -99,8 +97,21 @@ type LKEClusterConfigStatus struct {
 
 	// FailureMessage contains an optional failure message for the LKE cluster.
 	// +kubebuilder:validation:optional
-	FailureMessage string `json:"failureMessage,omitempty"`
+	FailureMessage *string `json:"failureMessage,omitempty"`
 }
+
+// +kubebuilder:validation:Enum=Active;Deleting;Provisioning;Unknown;Updating
+type Phase string
+
+const (
+	PhaseActive       Phase = "Active"
+	PhaseDeleting     Phase = "Deleting"
+	PhaseProvisioning Phase = "Provisioning"
+	PhaseUpdating     Phase = "Updating"
+	PhaseUnknown      Phase = "Unknown"
+)
+
+//+kubebuilder:object:root=true
 
 // LKEClusterConfig is the Schema for the lkeclusterconfigs API.
 type LKEClusterConfig struct {

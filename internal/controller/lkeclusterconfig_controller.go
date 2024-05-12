@@ -1,5 +1,5 @@
 /*
-Copyright 2024 anza-labs contributors.
+Copyright 2024 lke-operator contributors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	"github.com/anza-labs/lke-operator/api/v1alpha1"
@@ -49,7 +50,9 @@ type LKEClusterConfigReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.17.3/pkg/reconcile
 func (r *LKEClusterConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := log.FromContext(ctx).WithName("reconcile")
+	log := log.FromContext(ctx).WithName("reconcile").WithValues("object.namespaced_name", req)
+
+	log.Info("reconciling")
 
 	lke := &v1alpha1.LKEClusterConfig{}
 	if err := r.Get(ctx, req.NamespacedName, lke); err != nil {
@@ -59,16 +62,52 @@ func (r *LKEClusterConfigReconciler) Reconcile(ctx context.Context, req ctrl.Req
 			log.Info("LKEClusterConfig resource not found, ignoring since object must be deleted")
 			return ctrl.Result{}, nil
 		}
+
 		// Error reading the object - requeue the request.
 		log.Error(err, "failed to get LKEClusterConfig")
 		return ctrl.Result{}, err
 	}
 
-	if lke.DeletionTimestamp != nil {
-		return (&LKEClusterConfigHandler{}).OnDelete(ctx, lke)
+	if !lke.DeletionTimestamp.IsZero() && lke.Status.ClusterID != nil {
+		res, err := r.OnDelete(ctx, lke)
+		if err != nil {
+			log.Error(err, "on LKE deletion failed")
+			return ctrl.Result{}, err
+		}
+
+		if !res.Requeue {
+			log.Info("removing finalizer",
+				"finalizer", lkeFinalizer)
+
+			// remove our finalizer from the list and update it.
+			controllerutil.RemoveFinalizer(lke, lkeFinalizer)
+			if err := r.Update(ctx, lke); err != nil {
+				log.Error(err, "removing finalizer failed")
+				return ctrl.Result{}, err
+			}
+		}
+
+		return res, nil
 	}
 
-	return (&LKEClusterConfigHandler{}).OnChange(ctx, lke)
+	if !controllerutil.ContainsFinalizer(lke, lkeFinalizer) {
+		log.Info("adding finalizer",
+			"finalizer", lkeFinalizer)
+
+		controllerutil.AddFinalizer(lke, lkeFinalizer)
+		if err := r.Update(ctx, lke); err != nil {
+			log.Error(err, "adding finalizer failed")
+			return ctrl.Result{}, err
+		}
+	}
+
+	res, err := r.OnChange(ctx, lke)
+	if err != nil {
+		log.Error(err, "on LKE change failed")
+		return ctrl.Result{}, err
+	}
+
+	return res, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.

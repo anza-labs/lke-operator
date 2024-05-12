@@ -11,25 +11,13 @@ spec:
     kind: LKEClusterConfig
     listKind: LKEClusterConfigList
     plural: lkeclusterconfigs
-    shortNames:
-    - lkecc
     singular: lkeclusterconfig
   scope: Namespaced
   versions:
-  - additionalPrinterColumns:
-    - jsonPath: .spec.kubernetesVersion
-      name: K8sVersion
-      type: string
-    - jsonPath: .status.phase
-      name: Phase
-      type: string
-    - jsonPath: .status.failureMessage
-      name: FailureMessage
-      type: string
-    name: v1alpha1
+  - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: LKEClusterConfig is the Schema for the lkeclusterconfigs API
+        description: LKEClusterConfig is the Schema for the lkeclusterconfigs API.
         properties:
           apiVersion:
             description: |-
@@ -49,32 +37,40 @@ spec:
           metadata:
             type: object
           spec:
-            description: LKEClusterConfigSpec defines the desired state of LKEClusterConfig
+            description: LKEClusterConfigSpec defines the desired state of an LKEClusterConfig
+              resource.
             properties:
               highAvailability:
                 default: false
-                description: HighAvailability
+                description: |-
+                  HighAvailability specifies whether the LKE cluster should be configured for high
+                  availability.
                 type: boolean
               kubernetesVersion:
                 default: latest
-                description: KubernetesVersion indicates the kubernetes version of
-                  LKE.
+                description: KubernetesVersion indicates the Kubernetes version of
+                  the LKE cluster.
                 type: string
               nodePools:
-                description: NodePools
+                description: NodePools contains the specifications for each node pool
+                  within the LKE cluster.
                 items:
-                  description: LKENodePool
+                  description: LKENodePool represents a pool of nodes within the LKE
+                    cluster.
                   properties:
                     autoscaler:
-                      description: Autoscaler
+                      description: Autoscaler specifies the autoscaling configuration
+                        for the node pool.
                       properties:
                         max:
-                          description: Max
+                          description: Max specifies the maximum number of nodes in
+                            the pool.
                           maximum: 100
                           minimum: 3
                           type: integer
                         min:
-                          description: Min
+                          description: Min specifies the minimum number of nodes in
+                            the pool.
                           maximum: 100
                           minimum: 0
                           type: integer
@@ -84,20 +80,28 @@ spec:
                       type: object
                     linodeType:
                       default: g6-standard-1
-                      description: LinodeType
+                      description: LinodeType specifies the Linode instance type for
+                        the nodes in the pool.
                       type: string
                     nodeCount:
                       default: 3
-                      description: NodeCount
+                      description: NodeCount specifies the number of nodes in the
+                        node pool.
                       type: integer
+                  required:
+                  - linodeType
+                  - nodeCount
                   type: object
                 minItems: 1
                 type: array
               region:
-                description: Region
+                description: Region is the geographical region where the LKE cluster
+                  will be provisioned.
                 type: string
-              string:
-                description: TokenSecretRef
+              tokenSecretRef:
+                description: |-
+                  TokenSecretRef references the Kubernetes secret that stores the Linode API token.
+                  If not provided, then default token will be used.
                 properties:
                   name:
                     type: string
@@ -110,28 +114,36 @@ spec:
             required:
             - nodePools
             - region
+            - tokenSecretRef
             type: object
           status:
-            description: LKEClusterConfigStatus defines the observed state of LKEClusterConfig
+            description: LKEClusterConfigStatus defines the observed state of an LKEClusterConfig
+              resource.
             properties:
               clusterID:
-                description: ClusterID
+                description: ClusterID contains the ID of the provisioned LKE cluster.
                 type: integer
               failureMessage:
                 description: FailureMessage contains an optional failure message for
-                  the cluster.
+                  the LKE cluster.
                 type: string
               nodePoolIDs:
-                description: NodePoolsIDs
+                description: NodePoolsIDs contains the IDs of the provisioned node
+                  pools within the LKE cluster.
                 items:
                   type: integer
                 type: array
               phase:
-                description: Phase represents the current phase of the cluster.
+                default: Unknown
+                description: Phase represents the current phase of the LKE cluster.
+                enum:
+                - Active
+                - Deleting
+                - Provisioning
+                - Unknown
+                - Updating
                 type: string
             type: object
         type: object
     served: true
     storage: true
-    subresources:
-      status: {}
