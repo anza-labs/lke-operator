@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-	http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,12 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package version
+package errors
 
-import "runtime"
+import (
+	"errors"
+	"net/http"
+
+	"github.com/linode/linodego"
+)
 
 var (
-	Version string
-	OS      string = runtime.GOOS
-	Arch    string = runtime.GOARCH
+	ErrNilSecret    = errors.New("secret is nil")
+	ErrTokenMissing = errors.New("token is missing from secret")
+	ErrNoClusterID  = errors.New("no cluster ID")
+
+	ErrLinodeNotFound = linodego.Error{Code: http.StatusNotFound}
 )

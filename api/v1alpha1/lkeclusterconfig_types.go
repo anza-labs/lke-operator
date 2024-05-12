@@ -28,8 +28,7 @@ type LKEClusterConfigSpec struct {
 
 	// TokenSecretRef references the Kubernetes secret that stores the Linode API token.
 	// If not provided, then default token will be used.
-	// +kubebuilder:validation:optional
-	TokenSecretRef *SecretRef `json:"string,omitempty"`
+	TokenSecretRef SecretRef `json:"tokenSecretRef"`
 
 	// HighAvailability specifies whether the LKE cluster should be configured for high
 	// availability.
@@ -87,11 +86,12 @@ type LKENodePoolAutoscaler struct {
 type LKEClusterConfigStatus struct {
 	// Phase represents the current phase of the LKE cluster.
 	// +kubebuilder:validation:optional
-	Phase string `json:"phase,omitempty"`
+	// +kubebuilder:default=Unknown
+	Phase *Phase `json:"phase,omitempty"`
 
 	// ClusterID contains the ID of the provisioned LKE cluster.
 	// +kubebuilder:validation:optional
-	ClusterID int `json:"clusterID,omitempty"`
+	ClusterID *int `json:"clusterID,omitempty"`
 
 	// NodePoolsIDs contains the IDs of the provisioned node pools within the LKE cluster.
 	// +kubebuilder:validation:optional
@@ -99,8 +99,19 @@ type LKEClusterConfigStatus struct {
 
 	// FailureMessage contains an optional failure message for the LKE cluster.
 	// +kubebuilder:validation:optional
-	FailureMessage string `json:"failureMessage,omitempty"`
+	FailureMessage *string `json:"failureMessage,omitempty"`
 }
+
+// +kubebuilder:validation:Enum=Active;Deleting;Provisioning;Unknown;Updating
+type Phase string
+
+const (
+	PhaseActive       Phase = "Active"
+	PhaseDeleting     Phase = "Deleting"
+	PhaseProvisioning Phase = "Provisioning"
+	PhaseUpdating     Phase = "Updating"
+	PhaseUnknown      Phase = "Unknown"
+)
 
 // LKEClusterConfig is the Schema for the lkeclusterconfigs API.
 type LKEClusterConfig struct {
