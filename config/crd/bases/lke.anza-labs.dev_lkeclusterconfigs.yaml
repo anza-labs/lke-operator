@@ -88,6 +88,9 @@ spec:
                       description: NodeCount specifies the number of nodes in the
                         node pool.
                       type: integer
+                  required:
+                  - linodeType
+                  - nodeCount
                   type: object
                 minItems: 1
                 type: array
