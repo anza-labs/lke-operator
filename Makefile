@@ -51,6 +51,14 @@ generate: controller-gen gowrap ## Generate code containing DeepCopy, DeepCopyIn
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 	go generate ./...
 
+.PHONY: api-docs
+api-docs: crd-ref-docs ## Generate API Reference documentation.
+	$(CRD_REF_DOCS) \
+		--config=./docs/.crd-ref-docs.yaml \
+		--source-path=./api/ \
+		--renderer=markdown \
+		--output-path=./docs/reference/
+
 .PHONY: fmt
 fmt: ## Run go fmt against code.
 	go fmt ./...
@@ -129,12 +137,14 @@ CHAINSAW ?= $(LOCALBIN)/chainsaw-$(CHAINSAW_VERSION)
 KUSTOMIZE ?= $(LOCALBIN)/kustomize-$(KUSTOMIZE_VERSION)
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen-$(CONTROLLER_TOOLS_VERSION)
 GOLANGCI_LINT = $(LOCALBIN)/golangci-lint-$(GOLANGCI_LINT_VERSION)
+CRD_REF_DOCS = $(LOCALBIN)/crd-ref-docs-$(CRD_REF_DOCS_VERSION)
 GOWRAP = $(GOBIN)/gowrap
 
 ## Tool Versions
 CHAINSAW_VERSION ?= $(shell grep 'github.com/kyverno/chainsaw' ./go.mod | cut -d ' ' -f 2)
 CONTROLLER_TOOLS_VERSION ?= $(shell grep 'sigs.k8s.io/controller-tools' ./go.mod | cut -d ' ' -f 2)
 GOLANGCI_LINT_VERSION ?= $(shell grep 'github.com/golangci/golangci-lint' ./go.mod | cut -d ' ' -f 2)
+CRD_REF_DOCS_VERSION ?= $(shell grep 'github.com/elastic/crd-ref-docs' ./go.mod | cut -d ' ' -f 2)
 KUSTOMIZE_VERSION ?= $(shell grep 'sigs.k8s.io/kustomize/kustomize/v5' ./go.mod | cut -d ' ' -f 2)
 
 .PHONY: kustomize
@@ -156,6 +166,11 @@ $(CHAINSAW): $(LOCALBIN)
 golangci-lint: $(GOLANGCI_LINT) ## Download golangci-lint locally if necessary.
 $(GOLANGCI_LINT): $(LOCALBIN)
 	$(call go-install-tool,$(GOLANGCI_LINT),github.com/golangci/golangci-lint/cmd/golangci-lint,${GOLANGCI_LINT_VERSION})
+
+.PHONY: crd-ref-docs
+crd-ref-docs: $(CRD_REF_DOCS) ## Download crd-ref-docs locally if necessary.
+$(CRD_REF_DOCS): $(LOCALBIN)
+	$(call go-install-tool,$(CRD_REF_DOCS),github.com/elastic/crd-ref-docs,${CRD_REF_DOCS_VERSION})
 
 .PHONY: gowrap
 gowrap: $(GOWRAP)

@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "docs"
+authors = []
+description = "Documentation for lke-operator"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+mike = "^2.0.0"
+mkdocs = "^1.5.3"
+mkdocs-material = "^9.5.15"
+semver = "^3.0.2"
+mkdocs-nav-weight = "^0.2.0"
+
+[tool.poetry.scripts]
+publish = 'hack.publish:run'
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.3.0"
+mypy = "^1.9.0"
+isort = "^5.13.2"
+
+[tool.mypy]
+disable_error_code = "import-untyped"
+
+[tool.isort]
+profile = "black"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
