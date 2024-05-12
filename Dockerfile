@@ -54,7 +54,7 @@ USER 65532:65532
 HEALTHCHECK NONE
 
 # Add labels.
-ARG VERSION=canary
+ARG VERSION=dev
 
 ## Standard opencontainers labels.
 LABEL org.opencontainers.image.title="lke-operator"
