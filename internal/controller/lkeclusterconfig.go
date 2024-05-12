@@ -25,6 +25,7 @@ import (
 	"github.com/anza-labs/lke-operator/api/v1alpha1"
 	internalerrors "github.com/anza-labs/lke-operator/internal/errors"
 	"github.com/anza-labs/lke-operator/internal/lkeclient"
+	tracedclient "github.com/anza-labs/lke-operator/internal/lkeclient/traced"
 	"github.com/anza-labs/lke-operator/internal/version"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -41,14 +42,19 @@ func (r *LKEClusterConfigReconciler) OnChange(
 	ctx context.Context,
 	lke *v1alpha1.LKEClusterConfig,
 ) (ctrl.Result, error) {
-	/*
-		1. Get Cluster
-		- If Not Exists:
-			1. Create Cluster (return requeue)
-		- If Exists:
-			1. Check state
-			2.
-	*/
+	client, err := r.newLKEClient(ctx, lke.Spec.TokenSecretRef)
+	if err != nil {
+		return ctrl.Result{}, fmt.Errorf("failed to create client: %w", err)
+	}
+
+	return r.onChange(ctx, client, lke)
+}
+
+func (r *LKEClusterConfigReconciler) onChange(
+	ctx context.Context,
+	client lkeclient.Client,
+	lke *v1alpha1.LKEClusterConfig,
+) (ctrl.Result, error) {
 	panic("unimplemented")
 }
 
@@ -164,5 +170,8 @@ func (r *LKEClusterConfigReconciler) newLKEClient(
 		version.Arch,
 	)
 
-	return lkeclient.New(string(token), ua), nil
+	return tracedclient.NewClientWithTracing(
+		lkeclient.New(string(token), ua),
+		"dynamic_lke_traced_client",
+	), nil
 }
