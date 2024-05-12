@@ -21,3 +21,6 @@ docs/
 
 # GitHub configs
 .github/
+
+# Poetry env
+.venv
