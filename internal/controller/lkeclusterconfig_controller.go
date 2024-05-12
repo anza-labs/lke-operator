@@ -18,9 +18,11 @@ package controller
 
 import (
 	"context"
+	"errors"
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/kubernetes"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -33,7 +35,8 @@ import (
 // LKEClusterConfigReconciler reconciles a LKEClusterConfig object
 type LKEClusterConfigReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme           *runtime.Scheme
+	KubernetesClient kubernetes.Interface
 }
 
 //+kubebuilder:rbac:groups=lke.anza-labs.dev,resources=lkeclusterconfigs,verbs=get;list;watch;create;update;patch;delete
@@ -72,7 +75,7 @@ func (r *LKEClusterConfigReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		res, err := r.OnDelete(ctx, lke)
 		if err != nil {
 			log.Error(err, "on LKE deletion failed")
-			return ctrl.Result{}, err
+			return ctrl.Result{}, r.setFailureMessage(ctx, lke, err)
 		}
 
 		if !res.Requeue {
@@ -104,7 +107,7 @@ func (r *LKEClusterConfigReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	res, err := r.OnChange(ctx, lke)
 	if err != nil {
 		log.Error(err, "on LKE change failed")
-		return ctrl.Result{}, err
+		return ctrl.Result{}, r.setFailureMessage(ctx, lke, err)
 	}
 
 	return res, nil
@@ -115,4 +118,17 @@ func (r *LKEClusterConfigReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&lkev1alpha1.LKEClusterConfig{}).
 		Complete(r)
+}
+
+func (r *LKEClusterConfigReconciler) setFailureMessage(
+	ctx context.Context,
+	lke *lkev1alpha1.LKEClusterConfig,
+	err error,
+) error {
+	lke.Status.FailureMessage = mkptr(err.Error())
+	if uerr := r.Update(ctx, lke); uerr != nil {
+		return errors.Join(err, uerr)
+	}
+
+	return err
 }

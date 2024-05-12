@@ -23,8 +23,12 @@ import (
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
+	"k8s.io/client-go/kubernetes"
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
+	"github.com/anza-labs/lke-operator/internal/controller"
+	tracedk8s "github.com/anza-labs/lke-operator/internal/k8s/traced"
+	"github.com/anza-labs/lke-operator/internal/version"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
@@ -35,8 +39,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
 	lkev1alpha1 "github.com/anza-labs/lke-operator/api/v1alpha1"
-	"github.com/anza-labs/lke-operator/internal/controller"
-	"github.com/anza-labs/lke-operator/internal/version"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -143,8 +145,9 @@ func main() {
 	}
 
 	if err = (&controller.LKEClusterConfigReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:           tracedk8s.NewClientWithTracing(mgr.GetClient(), "main_mgr_client"),
+		Scheme:           mgr.GetScheme(),
+		KubernetesClient: kubernetes.NewForConfigOrDie(ctrl.GetConfigOrDie()),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller",
 			"controller", "LKEClusterConfig")
