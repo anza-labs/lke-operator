@@ -4,8 +4,8 @@ go 1.22.3
 
 require (
 	github.com/linode/linodego v1.33.1
-	go.opentelemetry.io/otel v1.24.0
-	go.opentelemetry.io/otel/trace v1.24.0
+	go.opentelemetry.io/otel v1.26.0
+	go.opentelemetry.io/otel/trace v1.26.0
 	k8s.io/api v0.30.0
 	k8s.io/apimachinery v0.30.0
 	k8s.io/client-go v0.30.0
@@ -15,8 +15,8 @@ require (
 
 // tools
 require (
-	github.com/golangci/golangci-lint v1.58.1
 	github.com/elastic/crd-ref-docs v0.0.12
+	github.com/golangci/golangci-lint v1.58.1
 	github.com/kyverno/chainsaw v0.2.0
 	sigs.k8s.io/controller-tools v0.15.0
 	sigs.k8s.io/kustomize/kustomize/v5 v5.4.1
@@ -268,7 +268,7 @@ require (
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.23.1 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.23.1 // indirect
-	go.opentelemetry.io/otel/metric v1.24.0 // indirect
+	go.opentelemetry.io/otel/metric v1.26.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.23.1 // indirect
 	go.opentelemetry.io/proto/otlp v1.1.0 // indirect
 	go.starlark.net v0.0.0-20200306205701-8dd3e2ee1dd5 // indirect
