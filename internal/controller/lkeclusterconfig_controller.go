@@ -39,9 +39,11 @@ type LKEClusterConfigReconciler struct {
 	KubernetesClient kubernetes.Interface
 }
 
-//+kubebuilder:rbac:groups=lke.anza-labs.dev,resources=lkeclusterconfigs,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=lke.anza-labs.dev,resources=lkeclusterconfigs/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=lke.anza-labs.dev,resources=lkeclusterconfigs/finalizers,verbs=update
+// +kubebuilder:rbac:groups=lke.anza-labs.dev,resources=lkeclusterconfigs,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=lke.anza-labs.dev,resources=lkeclusterconfigs/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=lke.anza-labs.dev,resources=lkeclusterconfigs/finalizers,verbs=update
+// +kubebuilder:rbac:groups=core,resources=events,verbs=create;patch
+// +kubebuilder:rbac:groups=core,resources=secrets,verbs=create;delete;get;update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

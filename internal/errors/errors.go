@@ -28,7 +28,8 @@ var (
 	ErrTokenMissing      = errors.New("token is missing from secret")
 	ErrNoClusterID       = errors.New("no cluster ID")
 	ErrInvalidLKEVersion = errors.New("invalid LKE version from API")
+	ErrNotReady          = errors.New("not ready")
 
-	ErrLinodeNotFound               = linodego.Error{Code: http.StatusNotFound}
-	ErrLinodeKubeconfigNotAvailable = linodego.Error{Code: http.StatusServiceUnavailable}
+	ErrLinodeNotFound             = linodego.Error{Code: http.StatusNotFound}
+	ErrLinodeResourceNotAvailable = linodego.Error{Code: http.StatusServiceUnavailable}
 )

@@ -1,5 +1,5 @@
 # Image URL to use all building/pushing image targets
-IMG ?= gchr.io/anza-labs/lke-operator:canary
+IMG ?= gchr.io/anza-labs/lke-operator:main
 PLATFORM ?= linux/$(shell go env GOARCH)
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
@@ -69,10 +69,10 @@ vet: ## Run go vet against code.
 
 .PHONY: test
 test: manifests generate fmt vet ## Run tests.
-	go test ./...
+	go test -cover -race -covermode=atomic ./...
 
 .PHONY: test-e2e
-test-e2e: ## Run the e2e tests against a k8s instance using Kyverno Chainsaw.
+test-e2e: chainsaw ## Run the e2e tests against a k8s instance using Kyverno Chainsaw.
 	$(CHAINSAW) test
 
 .PHONY: lint
@@ -98,7 +98,7 @@ docker-push: ## Push docker image with the manager.
 .PHONY: build-installer
 build-installer: manifests generate kustomize ## Generate a consolidated YAML with CRDs and deployment.
 	mkdir -p dist
-	cd config/manager && $(KUSTOMIZE) edit set image ghcr.io/anza-labs/lke-operator:canary=${IMG}
+	cd config/manager && $(KUSTOMIZE) edit set image ghcr.io/anza-labs/lke-operator:main=${IMG}
 	$(KUSTOMIZE) build config/default > dist/install.yaml
 
 ##@ Deployment
@@ -117,7 +117,7 @@ uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified 
 
 .PHONY: deploy
 deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
+	cd config/manager && $(KUSTOMIZE) edit set image ghcr.io/anza-labs/lke-operator:main=${IMG}
 	$(KUSTOMIZE) build config/default | $(KUBECTL) apply -f -
 
 .PHONY: undeploy

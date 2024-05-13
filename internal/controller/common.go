@@ -17,7 +17,13 @@ limitations under the License.
 package controller
 
 const (
-	lkeFinalizer = "lke.anza-labs.dev/finalizer"
+	lkeFinalizer      = "lke.anza-labs.dev/finalizer"
+	lkeTagsAnnotation = "lke.anza-labs.dev/tags"
+
+	lkeOperatorTag = "lke-operator.name="
+	kubeconfigKey  = "kubeconfig"
+
+	statusReady = "ready"
 )
 
 func mkptr[T any](t T) *T {

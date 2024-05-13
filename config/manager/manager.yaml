@@ -51,7 +51,7 @@ spec:
         - /manager
         args:
         - --leader-elect
-        image: ghcr.io/anza-labs/lke-operator:canary
+        image: ghcr.io/anza-labs/lke-operator:main
         name: manager
         securityContext:
           allowPrivilegeEscalation: false

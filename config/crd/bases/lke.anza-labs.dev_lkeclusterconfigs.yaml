@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
   name: lkeclusterconfigs.lke.anza-labs.dev
 spec:
   group: lke.anza-labs.dev
@@ -11,10 +11,25 @@ spec:
     kind: LKEClusterConfig
     listKind: LKEClusterConfigList
     plural: lkeclusterconfigs
+    shortNames:
+    - lkecc
     singular: lkeclusterconfig
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - jsonPath: .spec.region
+      name: Region
+      type: string
+    - jsonPath: .spec.kubernetesVersion
+      name: K8sVersion
+      type: string
+    - jsonPath: .status.phase
+      name: Phase
+      type: string
+    - jsonPath: .status.failureMessage
+      name: FailureMessage
+      type: string
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         description: LKEClusterConfig is the Schema for the lkeclusterconfigs API.
@@ -52,9 +67,7 @@ spec:
                   the LKE cluster.
                 type: string
               nodePools:
-                description: NodePools contains the specifications for each node pool
-                  within the LKE cluster.
-                items:
+                additionalProperties:
                   description: LKENodePool represents a pool of nodes within the LKE
                     cluster.
                   properties:
@@ -65,26 +78,20 @@ spec:
                         max:
                           description: Max specifies the maximum number of nodes in
                             the pool.
-                          maximum: 100
-                          minimum: 3
                           type: integer
                         min:
                           description: Min specifies the minimum number of nodes in
                             the pool.
-                          maximum: 100
-                          minimum: 0
                           type: integer
                       required:
                       - max
                       - min
                       type: object
                     linodeType:
-                      default: g6-standard-1
                       description: LinodeType specifies the Linode instance type for
                         the nodes in the pool.
                       type: string
                     nodeCount:
-                      default: 3
                       description: NodeCount specifies the number of nodes in the
                         node pool.
                       type: integer
@@ -92,8 +99,9 @@ spec:
                   - linodeType
                   - nodeCount
                   type: object
-                minItems: 1
-                type: array
+                description: NodePools contains the specifications for each node pool
+                  within the LKE cluster.
+                type: object
               region:
                 description: Region is the geographical region where the LKE cluster
                   will be provisioned.
@@ -127,12 +135,50 @@ spec:
                 description: FailureMessage contains an optional failure message for
                   the LKE cluster.
                 type: string
-              nodePoolIDs:
-                description: NodePoolsIDs contains the IDs of the provisioned node
-                  pools within the LKE cluster.
-                items:
-                  type: integer
-                type: array
+              nodePoolStatuses:
+                additionalProperties:
+                  description: NodePoolStatus
+                  properties:
+                    details:
+                      description: NodePoolDetails
+                      properties:
+                        autoscaler:
+                          description: Autoscaler specifies the autoscaling configuration
+                            for the node pool.
+                          properties:
+                            max:
+                              description: Max specifies the maximum number of nodes
+                                in the pool.
+                              type: integer
+                            min:
+                              description: Min specifies the minimum number of nodes
+                                in the pool.
+                              type: integer
+                          required:
+                          - max
+                          - min
+                          type: object
+                        linodeType:
+                          description: LinodeType specifies the Linode instance type
+                            for the nodes in the pool.
+                          type: string
+                        nodeCount:
+                          description: NodeCount specifies the number of nodes in
+                            the node pool.
+                          type: integer
+                      required:
+                      - linodeType
+                      - nodeCount
+                      type: object
+                    id:
+                      description: ID
+                      type: integer
+                  required:
+                  - details
+                  type: object
+                description: NodePoolStatuses contains the Status of the provisioned
+                  node pools within the LKE cluster.
+                type: object
               phase:
                 default: Unknown
                 description: Phase represents the current phase of the LKE cluster.
@@ -147,3 +193,4 @@ spec:
         type: object
     served: true
     storage: true
+    subresources: {}

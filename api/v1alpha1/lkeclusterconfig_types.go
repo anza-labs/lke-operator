@@ -23,11 +23,12 @@ import (
 // LKEClusterConfigSpec defines the desired state of an LKEClusterConfig resource.
 type LKEClusterConfigSpec struct {
 	// Region is the geographical region where the LKE cluster will be provisioned.
-	// +required
+	// +kubebuilder:validation:required
 	Region string `json:"region"`
 
 	// TokenSecretRef references the Kubernetes secret that stores the Linode API token.
 	// If not provided, then default token will be used.
+	// +kubebuilder:validation:required
 	TokenSecretRef SecretRef `json:"tokenSecretRef"`
 
 	// HighAvailability specifies whether the LKE cluster should be configured for high
@@ -37,8 +38,9 @@ type LKEClusterConfigSpec struct {
 	HighAvailability *bool `json:"highAvailability,omitempty"`
 
 	// NodePools contains the specifications for each node pool within the LKE cluster.
-	// +kubebuilder:validation:MinItems=1
-	NodePools []LKENodePool `json:"nodePools"`
+	// +kubebuilder:validation:required
+	// +kubebuilder:validation:minProperties=1
+	NodePools map[string]LKENodePool `json:"nodePools"`
 
 	// KubernetesVersion indicates the Kubernetes version of the LKE cluster.
 	// +kubebuilder:validation:optional
@@ -55,11 +57,11 @@ type SecretRef struct {
 // LKENodePool represents a pool of nodes within the LKE cluster.
 type LKENodePool struct {
 	// NodeCount specifies the number of nodes in the node pool.
-	// +kubebuilder:default=3
+	// +kubebuilder:validation:required
 	NodeCount int `json:"nodeCount"`
 
 	// LinodeType specifies the Linode instance type for the nodes in the pool.
-	// +kubebuilder:default=g6-standard-1
+	// +kubebuilder:validation:required
 	LinodeType string `json:"linodeType"`
 
 	// Autoscaler specifies the autoscaling configuration for the node pool.
@@ -67,16 +69,38 @@ type LKENodePool struct {
 	Autoscaler *LKENodePoolAutoscaler `json:"autoscaler,omitempty"`
 }
 
+func (l LKENodePool) IsEqual(cmp LKENodePool) bool {
+	if l.NodeCount != cmp.NodeCount {
+		return false
+	}
+
+	if l.LinodeType != cmp.LinodeType {
+		return false
+	}
+
+	if l.Autoscaler == nil && cmp.Autoscaler == nil {
+		return true
+	}
+
+	if l.Autoscaler == nil || cmp.Autoscaler == nil {
+		return false
+	}
+
+	return l.Autoscaler.Min == cmp.Autoscaler.Min && l.Autoscaler.Max == cmp.Autoscaler.Max
+}
+
 // LKENodePoolAutoscaler represents the autoscaler configuration for a node pool.
 type LKENodePoolAutoscaler struct {
 	// Min specifies the minimum number of nodes in the pool.
-	// +kubebuilder:validation:Minimum=0
-	// +kubebuilder:validation:Maximum=100
+	// +kubebuilder:validation:required
+	// +kubebuilder:validation:minimum=0
+	// +kubebuilder:validation:maximum=100
 	Min int `json:"min"`
 
 	// Max specifies the maximum number of nodes in the pool.
-	// +kubebuilder:validation:Minimum=3
-	// +kubebuilder:validation:Maximum=100
+	// +kubebuilder:validation:required
+	// +kubebuilder:validation:minimum=3
+	// +kubebuilder:validation:maximum=100
 	Max int `json:"max"`
 }
 
@@ -91,13 +115,28 @@ type LKEClusterConfigStatus struct {
 	// +kubebuilder:validation:optional
 	ClusterID *int `json:"clusterID,omitempty"`
 
-	// NodePoolsIDs contains the IDs of the provisioned node pools within the LKE cluster.
+	// NodePoolStatuses contains the Status of the provisioned node pools within the LKE cluster.
 	// +kubebuilder:validation:optional
-	NodePoolsIDs []int `json:"nodePoolIDs,omitempty"`
+	NodePoolStatuses map[string]NodePoolStatus `json:"nodePoolStatuses,omitempty"`
 
 	// FailureMessage contains an optional failure message for the LKE cluster.
 	// +kubebuilder:validation:optional
 	FailureMessage *string `json:"failureMessage,omitempty"`
+}
+
+// NodePoolStatus
+type NodePoolStatus struct {
+	// ID
+	// +kubebuilder:validation:optional
+	ID *int `json:"id,omitempty"`
+
+	// NodePoolDetails
+	// +kubebuilder:validation:required
+	NodePoolDetails LKENodePool `json:"details"`
+}
+
+func (n NodePoolStatus) IsEqual(cmp NodePoolStatus) bool {
+	return n.NodePoolDetails.IsEqual(cmp.NodePoolDetails)
 }
 
 // +kubebuilder:validation:Enum=Active;Deleting;Provisioning;Unknown;Updating
@@ -111,9 +150,14 @@ const (
 	PhaseUnknown      Phase = "Unknown"
 )
 
-//+kubebuilder:object:root=true
+// +kubebuilder:object:root=true
 
 // LKEClusterConfig is the Schema for the lkeclusterconfigs API.
+// +kubebuilder:resource:shortName=lkecc
+// +kubebuilder:printcolumn:name=Region,type=string,JSONPath=`.spec.region`
+// +kubebuilder:printcolumn:name=K8sVersion,type=string,JSONPath=`.spec.kubernetesVersion`
+// +kubebuilder:printcolumn:name=Phase,type=string,JSONPath=`.status.phase`
+// +kubebuilder:printcolumn:name=FailureMessage,type=string,JSONPath=`.status.failureMessage`
 type LKEClusterConfig struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -122,7 +166,7 @@ type LKEClusterConfig struct {
 	Status LKEClusterConfigStatus `json:"status,omitempty"`
 }
 
-//+kubebuilder:object:root=true
+// +kubebuilder:object:root=true
 
 // LKEClusterConfigList contains a list of LKEClusterConfig
 type LKEClusterConfigList struct {

@@ -3,12 +3,6 @@ resources:
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
-- name: controller
-  newName: foo/bar
-  newTag: baz
-- name: gchr.io/anza-labs/lke-operator:canary
-  newName: foo/bar
-  newTag: baz
-- name: ghcr.io/anza-labs/lke-operator:canary
-  newName: foo/bar
-  newTag: baz
+- name: ghcr.io/anza-labs/lke-operator:main
+  newName: docker.io/shanduur/lke-operator
+  newTag: canary
