@@ -91,7 +91,7 @@ def run(args=sys.argv):
     """
     parser = argparse.ArgumentParser(
         prog="publish",
-        description="Script to build and publish documentation of registry-operator docs",
+        description="Script to build and publish documentation of lke-operator docs",
     )
     parser.add_argument(
         "--version",

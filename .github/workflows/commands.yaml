@@ -1,28 +1,64 @@
-name: Remove Label
+name: commands
 
 on: [issue_comment]
 
 jobs:
-  remove_label:
+  test-e2e:
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.event.comment.body, '/ok-to-test') && github.event.issue.pull_request }}
     steps:
+      - uses: TheModdingInquisition/actions-team-membership@v1.0
+        with:
+          organization: anza-labs
+          team: core
+          token: ${{ secrets.READ_ORG }}
+          comment: ":red_circle: I'm sorry @${{ github.event.comment.user.login }}, I'm afraid I can't do that."
+          exit: true
       - uses: actions/checkout@v2
-      - run: |
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
           gh pr checkout ${{ github.event.issue.number }}
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
           cache: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          check-latest: true
+      - run: |
+          pip install poetry
+          poetry install
       - uses: helm/kind-action@v1
+        with:
+          cluster_name: e2e
       - uses: docker/build-push-action@v5
         with:
-          tags: ghcr.io/${{ github.event.repository.owner.name }}/lke-operator:e2e
-          build-args: VERSION=${{ github.ref_name }}
+          tags: lke-operator:e2e
+          build-args: VERSION=e2e
       - run: |
-          kind load docker-image ghcr.io/${{ github.event.repository.owner.name }}/lke-operator:e2e
-      - run:
-          make install
-          make deploy IMG=ghcr.io/${{ github.event.repository.owner.name }}/lke-operator:e2e
+          kind load docker-image --name=e2e lke-operator:e2e
+          kubectl create namespace test-shared
+          kubectl create secret generic \
+            --namespace=test-shared \
+            --from-literal='LINODE_TOKEN=${{ secrets.LINODE_TOKEN }}' \
+            test-token
       - run: |
-          make test-e2e
+          make install deploy IMG=lke-operator:e2e
+      - run: |
+          test-e2e CHAINSAW_ARGS='--report-format=XML'
+        id: e2e
+        continue-on-error: true
+      - run: |
+          {
+            echo 'markdown<<EOF'
+            poetry run report
+            echo 'EOF'
+          } >> "${GITHUB_OUTPUT}"
+        if: ${{ success() || failure() }}
+        id: report
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: ${{ steps.report.outputs.markdown }}
+          number: ${{ github.event.issue.number }}

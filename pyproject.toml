@@ -14,6 +14,7 @@ mkdocs-nav-weight = "^0.2.0"
 
 [tool.poetry.scripts]
 publish = 'hack.publish:run'
+report = 'hack.report:run'
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"

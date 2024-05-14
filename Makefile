@@ -1,6 +1,7 @@
 # Image URL to use all building/pushing image targets
 IMG ?= ghcr.io/anza-labs/lke-operator:main
 PLATFORM ?= linux/$(shell go env GOARCH)
+CHAINSAW_ARGS ?=
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -73,7 +74,7 @@ test: manifests generate fmt vet ## Run tests.
 
 .PHONY: test-e2e
 test-e2e: chainsaw ## Run the e2e tests against a k8s instance using Kyverno Chainsaw.
-	$(CHAINSAW) test
+	$(CHAINSAW) test ${CHAINSAW_ARGS}
 
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter & yamllint
