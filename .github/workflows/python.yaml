@@ -1,0 +1,34 @@
+name: python
+
+on:
+  pull_request:
+    branches: [ '*' ]
+    paths:
+      - 'hack/**'
+      - 'docs/**'
+      - 'poetry.lock'
+      - 'pyproject.toml'
+  push:
+    branches:
+      - "main"
+
+jobs:
+  linters:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: fregante/setup-git-user@v2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          check-latest: true
+      - run: |
+          pip install poetry
+      - run: |
+          poetry install
+      - run: |
+          poetry run black --check .
+          poetry run isort --check .
+          poetry run mypy .

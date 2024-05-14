@@ -1,17 +1,18 @@
-import sys
 import argparse
-import xml.dom.minidom as minidom
+import sys
 import traceback
+import xml.dom.minidom as minidom
 
 FAILED = ":x: Failed"
 PASSED = ":white_check_mark: Passed"
+
 
 class Table:
     def __init__(self, headers: list[str]) -> None:
         self.headers = headers
         self.separator = ["---"] * len(headers)
         self.cols = len(headers)
-        self.rows = []
+        self.rows: list[list[str]] = []
 
     def add(self, row: list[str]) -> None:
         assert self.cols == len(row)
@@ -19,10 +20,12 @@ class Table:
 
 
 class Report:
-    def __init__(self,
-                 time: str, timestamp: str,
-                 table: Table,
-                 ) -> None:
+    def __init__(
+        self,
+        time: str,
+        timestamp: str,
+        table: Table,
+    ) -> None:
         self.time = time
         self.timestamp = timestamp
         self.table = table
@@ -32,32 +35,37 @@ class Report:
 
     def print(self) -> None:
         print(f'## E2E report {":white_check_mark:" if self.ok else ":x:"}')
-        print(f'Started at `{self.timestamp}` took `{self.time}`')
-        print('')
-        print(f'![](https://img.shields.io/badge/tests-{self.passes}_passed%2C_{self.failures}_failed-{"green" if self.ok else "red"})')
-        print('')
-        print('|'.join(self.table.headers))
-        print('|'.join(self.table.separator))
-        for row in sorted(self.table.rows, key=lambda x: x[self.table.cols-1], reverse=True):
-            print('|'.join(row))
+        print(f"Started at `{self.timestamp}` took `{self.time}`")
+        print("")
+        print(
+            f'![](https://img.shields.io/badge/tests-{self.passes}_passed%2C_{self.failures}_failed-{"green" if self.ok else "red"})'
+        )
+        print("")
+        print("|".join(self.table.headers))
+        print("|".join(self.table.separator))
+        for row in sorted(
+            self.table.rows, key=lambda x: x[self.table.cols - 1], reverse=True
+        ):
+            print("|".join(row))
+
 
 def generate_markdown(report: str) -> None:
     dom = minidom.parse(report)
 
     table = Table(["Test Suite", "Test Case", "Time (s)", "Status"])
 
-    testsuiteList = dom.getElementsByTagName('testsuite')
+    testsuiteList = dom.getElementsByTagName("testsuite")
     for testsuite in testsuiteList:
         testsuite_name = testsuite.getAttribute("name")
-        testcases = testsuite.getElementsByTagName('testcase')
+        testcases = testsuite.getElementsByTagName("testcase")
 
         for testcase in testcases:
             testcase_name = testcase.getAttribute("name")
             time = testcase.getAttribute("time")
             status = FAILED if testcase.getElementsByTagName("failure") else PASSED
-            table.add(row=[testsuite_name, testcase_name, f'`{time}`', status])
+            table.add(row=[testsuite_name, testcase_name, f"`{time}`", status])
 
-    testsuites = dom.getElementsByTagName('testsuites')
+    testsuites = dom.getElementsByTagName("testsuites")
 
     Report(
         time=testsuites[0].getAttribute("time"),
@@ -89,8 +97,8 @@ def run(args=sys.argv):
     try:
         generate_markdown(args.file)
     except Exception as exc:
-        print('## Report generation failed :skull:')
-        print('')
-        print('```log')
-        print(f'{traceback.print_exception(exc)}')
-        print('```')
+        print("## Report generation failed :skull:")
+        print("")
+        print("```log")
+        print(f"{traceback.print_exception(exc)}")
+        print("```")
