@@ -2,7 +2,3 @@ resources:
 - manager.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-images:
-- name: ghcr.io/anza-labs/lke-operator:main
-  newName: docker.io/shanduur/lke-operator
-  newTag: canary
