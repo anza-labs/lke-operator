@@ -729,10 +729,10 @@
 <td></td>
 </tr>
 <tr>
-<td><code>nodePools</code> <em><a href="#lkenodepool">LKENodePool</a> array</em></td>
+<td><code>nodePools</code> <em>object (keys:string, values:<a href="#lkenodepool">LKENodePool</a>)</em></td>
 <td>NodePools contains the specifications for each node pool within the LKE cluster.</td>
 <td></td>
-<td>MinItems: 1 <br /></td>
+<td></td>
 </tr>
 <tr>
 <td><code>kubernetesVersion</code> <em>string</em></td>
@@ -745,7 +745,8 @@
 <h4 id="lkenodepool">LKENodePool</h4>
 <p>LKENodePool represents a pool of nodes within the LKE cluster.</p>
 <p><em>Appears in:</em>
-- <a href="#lkeclusterconfigspec">LKEClusterConfigSpec</a></p>
+- <a href="#lkeclusterconfigspec">LKEClusterConfigSpec</a>
+- <a href="#nodepoolstatus">NodePoolStatus</a></p>
 <table>
 <thead>
 <tr>
@@ -759,13 +760,13 @@
 <tr>
 <td><code>nodeCount</code> <em>integer</em></td>
 <td>NodeCount specifies the number of nodes in the node pool.</td>
-<td>3</td>
+<td></td>
 <td></td>
 </tr>
 <tr>
 <td><code>linodeType</code> <em>string</em></td>
 <td>LinodeType specifies the Linode instance type for the nodes in the pool.</td>
-<td>g6-standard-1</td>
+<td></td>
 <td></td>
 </tr>
 <tr>
@@ -794,13 +795,13 @@
 <td><code>min</code> <em>integer</em></td>
 <td>Min specifies the minimum number of nodes in the pool.</td>
 <td></td>
-<td>Maximum: 100 <br />Minimum: 0 <br /></td>
+<td></td>
 </tr>
 <tr>
 <td><code>max</code> <em>integer</em></td>
 <td>Max specifies the maximum number of nodes in the pool.</td>
 <td></td>
-<td>Maximum: 100 <br />Minimum: 3 <br /></td>
+<td></td>
 </tr>
 </tbody>
 </table>
