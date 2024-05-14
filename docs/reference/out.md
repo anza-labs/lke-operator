@@ -47,7 +47,7 @@ _Appears in:_
 | `region` _string_ | Region is the geographical region where the LKE cluster will be provisioned. |  |  |
 | `tokenSecretRef` _[SecretRef](#secretref)_ | TokenSecretRef references the Kubernetes secret that stores the Linode API token.<br />If not provided, then default token will be used. |  |  |
 | `highAvailability` _boolean_ | HighAvailability specifies whether the LKE cluster should be configured for high<br />availability. | false |  |
-| `nodePools` _[LKENodePool](#lkenodepool) array_ | NodePools contains the specifications for each node pool within the LKE cluster. |  | MinItems: 1 <br /> |
+| `nodePools` _object (keys:string, values:[LKENodePool](#lkenodepool))_ | NodePools contains the specifications for each node pool within the LKE cluster. |  |  |
 | `kubernetesVersion` _string_ | KubernetesVersion indicates the Kubernetes version of the LKE cluster. | latest |  |
 
 
@@ -61,11 +61,12 @@ LKENodePool represents a pool of nodes within the LKE cluster.
 
 _Appears in:_
 - [LKEClusterConfigSpec](#lkeclusterconfigspec)
+- [NodePoolStatus](#nodepoolstatus)
 
 | Field | Description | Default | Validation |
 | --- | --- | --- | --- |
-| `nodeCount` _integer_ | NodeCount specifies the number of nodes in the node pool. | 3 |  |
-| `linodeType` _string_ | LinodeType specifies the Linode instance type for the nodes in the pool. | g6-standard-1 |  |
+| `nodeCount` _integer_ | NodeCount specifies the number of nodes in the node pool. |  |  |
+| `linodeType` _string_ | LinodeType specifies the Linode instance type for the nodes in the pool. |  |  |
 | `autoscaler` _[LKENodePoolAutoscaler](#lkenodepoolautoscaler)_ | Autoscaler specifies the autoscaling configuration for the node pool. |  |  |
 
 
@@ -82,8 +83,10 @@ _Appears in:_
 
 | Field | Description | Default | Validation |
 | --- | --- | --- | --- |
-| `min` _integer_ | Min specifies the minimum number of nodes in the pool. |  | Maximum: 100 <br />Minimum: 0 <br /> |
-| `max` _integer_ | Max specifies the maximum number of nodes in the pool. |  | Maximum: 100 <br />Minimum: 3 <br /> |
+| `min` _integer_ | Min specifies the minimum number of nodes in the pool. |  |  |
+| `max` _integer_ | Max specifies the maximum number of nodes in the pool. |  |  |
+
+
 
 
 

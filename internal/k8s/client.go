@@ -14,22 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package errors
+package k8s
 
-import (
-	"errors"
-	"net/http"
+import "sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/linode/linodego"
-)
-
-var (
-	ErrNilSecret         = errors.New("secret is nil")
-	ErrTokenMissing      = errors.New("token is missing from secret")
-	ErrNoClusterID       = errors.New("no cluster ID")
-	ErrInvalidLKEVersion = errors.New("invalid LKE version from API")
-	ErrNotReady          = errors.New("not ready")
-
-	ErrLinodeNotFound             = linodego.Error{Code: http.StatusNotFound}
-	ErrLinodeResourceNotAvailable = linodego.Error{Code: http.StatusServiceUnavailable}
-)
+type Client interface {
+	client.Client
+}
