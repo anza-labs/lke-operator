@@ -1,0 +1,24 @@
+apiVersion: lke.anza-labs.dev/v1alpha1
+kind: LKEClusterConfig
+metadata:
+  name: minimal
+  annotations:
+    lke.anza-labs.dev/tags: |
+      test-minimal
+      chainsaw-e2e
+spec:
+  tokenSecretRef:
+    name: test-token
+    namespace: test-shared
+  region: eu-central
+  nodePools:
+    np-1:
+      nodeCount: 3
+      linodeType: g6-standard-1
+status:
+  phase: Active
+  nodePoolStatuses:
+    np-1:
+      details:
+        nodeCount: 3
+        linodeType: g6-standard-1

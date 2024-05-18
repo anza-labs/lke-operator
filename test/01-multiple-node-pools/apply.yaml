@@ -1,17 +1,23 @@
 apiVersion: lke.anza-labs.dev/v1alpha1
 kind: LKEClusterConfig
 metadata:
-  name: base
+  name: multi-np
   annotations:
     lke.anza-labs.dev/tags: |
-      test-base
-      chainsaw
+      test-multi-np
+      chainsaw-e2e
 spec:
   tokenSecretRef:
     name: test-token
     namespace: test-shared
   region: eu-central
   nodePools:
-    base:
+    np-1:
+      nodeCount: 3
+      linodeType: g6-standard-1
+    np-2:
+      nodeCount: 3
+      linodeType: g6-standard-1
+    np-3:
       nodeCount: 3
       linodeType: g6-standard-1
