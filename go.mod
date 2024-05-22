@@ -19,7 +19,7 @@ require (
 require (
 	github.com/elastic/crd-ref-docs v0.0.12
 	github.com/golangci/golangci-lint v1.58.2
-	github.com/kyverno/chainsaw v0.2.0
+	github.com/kyverno/chainsaw v0.2.2
 	sigs.k8s.io/controller-tools v0.15.0
 	sigs.k8s.io/kustomize/kustomize/v5 v5.4.1
 )
