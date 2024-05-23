@@ -34,6 +34,7 @@ jobs:
         with:
           tags: lke-operator:e2e
           build-args: VERSION=e2e
+          context: .
       - run: |
           kind load docker-image --name=e2e lke-operator:e2e
           kubectl create namespace test-shared
