@@ -3,7 +3,7 @@ module github.com/anza-labs/lke-operator
 go 1.22.3
 
 require (
-	github.com/go-logr/logr v1.4.1
+	github.com/go-logr/logr v1.4.2
 	github.com/go-resty/resty/v2 v2.13.1
 	github.com/linode/linodego v1.34.0
 	go.opentelemetry.io/otel v1.27.0
