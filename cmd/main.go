@@ -19,18 +19,20 @@ package main
 import (
 	"crypto/tls"
 	"flag"
+	"net/http"
 	"os"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
-	"k8s.io/client-go/kubernetes"
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
 	"github.com/anza-labs/lke-operator/internal/controller"
 	tracedk8s "github.com/anza-labs/lke-operator/internal/k8s/traced"
 	"github.com/anza-labs/lke-operator/internal/version"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+	"k8s.io/client-go/kubernetes"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -144,10 +146,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	rest := ctrl.GetConfigOrDie()
+	rest.WrapTransport = func(rt http.RoundTripper) http.RoundTripper {
+		return otelhttp.NewTransport(rt)
+	}
+
 	if err = (&controller.LKEClusterConfigReconciler{
 		Client:           tracedk8s.NewClientWithTracing(mgr.GetClient(), "main_mgr_client"),
 		Scheme:           mgr.GetScheme(),
-		KubernetesClient: kubernetes.NewForConfigOrDie(ctrl.GetConfigOrDie()),
+		KubernetesClient: kubernetes.NewForConfigOrDie(rest),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller",
 			"controller", "LKEClusterConfig")
