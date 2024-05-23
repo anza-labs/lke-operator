@@ -96,8 +96,8 @@ func (r *LKEClusterConfigReconciler) onChangeCreate(
 	}
 
 	if lke.Spec.HighAvailability != nil {
-		opts.ControlPlane = &linodego.LKEClusterControlPlane{
-			HighAvailability: *lke.Spec.HighAvailability,
+		opts.ControlPlane = &linodego.LKEClusterControlPlaneOptions{
+			HighAvailability: lke.Spec.HighAvailability,
 		}
 	}
 
@@ -394,8 +394,8 @@ func updateControlPlane(
 		lke.Spec.HighAvailability = mkptr(false)
 	}
 
-	opts.ControlPlane = &linodego.LKEClusterControlPlane{
-		HighAvailability: *lke.Spec.HighAvailability,
+	opts.ControlPlane = &linodego.LKEClusterControlPlaneOptions{
+		HighAvailability: lke.Spec.HighAvailability,
 	}
 
 	return opts, cluster.ControlPlane.HighAvailability != *lke.Spec.HighAvailability
