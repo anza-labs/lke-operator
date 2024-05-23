@@ -1,0 +1,25 @@
+apiVersion: lke.anza-labs.dev/v1alpha1
+kind: LKEClusterConfig
+metadata:
+  name: high-availability
+  annotations:
+    lke.anza-labs.dev/tags: |
+      test-ha
+      chainsaw-e2e
+spec:
+  tokenSecretRef:
+    name: test-token
+    namespace: test-shared
+  region: eu-central
+  highAvailability: true
+  nodePools:
+    np-1:
+      nodeCount: 3
+      linodeType: g6-standard-1
+status:
+  phase: Active
+  nodePoolStatuses:
+    np-1:
+      details:
+        nodeCount: 3
+        linodeType: g6-standard-1

@@ -200,7 +200,7 @@ func Test_updateControlPlane(t *testing.T) {
 					tc.expectedChange, change)
 			}
 
-			if opts.ControlPlane.HighAvailability != tc.expectedHA {
+			if opts.ControlPlane.HighAvailability == nil || *opts.ControlPlane.HighAvailability != tc.expectedHA {
 				t.Errorf("expected HA value: %#+v, got: %#+v",
 					tc.expectedHA, opts.ControlPlane.HighAvailability)
 			}

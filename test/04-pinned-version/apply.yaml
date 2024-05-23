@@ -1,0 +1,18 @@
+apiVersion: lke.anza-labs.dev/v1alpha1
+kind: LKEClusterConfig
+metadata:
+  name: pinned-version
+  annotations:
+    lke.anza-labs.dev/tags: |
+      test-pinned-version
+      chainsaw-e2e
+spec:
+  tokenSecretRef:
+    name: test-token
+    namespace: test-shared
+  region: eu-central
+  nodePools:
+    np-1:
+      nodeCount: 3
+      linodeType: g6-standard-1
+  kubernetesVersion: '1.29' # must be quoted

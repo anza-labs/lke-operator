@@ -55,7 +55,7 @@ type LKEClusterConfigReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.17.3/pkg/reconcile
 func (r *LKEClusterConfigReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := log.FromContext(ctx).WithName("reconcile").WithValues("object.namespaced_name", req)
+	log := log.FromContext(ctx, "object.namespaced_name", req)
 
 	log.Info("reconciling")
 
@@ -128,6 +128,7 @@ func (r *LKEClusterConfigReconciler) setFailureMessage(
 	err error,
 ) error {
 	lke.Status.FailureMessage = mkptr(err.Error())
+	lke.Status.Phase = mkptr(lkev1alpha1.PhaseError)
 	if uerr := r.Update(ctx, lke); uerr != nil {
 		return errors.Join(err, uerr)
 	}

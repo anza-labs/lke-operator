@@ -29,6 +29,9 @@ go.work
 # generated files
 dist/
 
+# E2E test report
+chainsaw-report.xml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

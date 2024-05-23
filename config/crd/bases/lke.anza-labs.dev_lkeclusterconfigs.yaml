@@ -185,6 +185,7 @@ spec:
                 enum:
                 - Active
                 - Deleting
+                - Error
                 - Provisioning
                 - Unknown
                 - Updating

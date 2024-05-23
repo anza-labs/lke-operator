@@ -5,11 +5,11 @@ metadata:
 spec:
   timeouts:
     apply: 45s
-    assert: 300s
+    assert: 600s
     cleanup: 45s
     delete: 25s
     error: 10s
     exec: 45s
   skipDelete: false
   failFast: true
-  parallel: 4
+  parallel: 1

@@ -139,12 +139,13 @@ func (n NodePoolStatus) IsEqual(cmp NodePoolStatus) bool {
 	return n.NodePoolDetails.IsEqual(cmp.NodePoolDetails)
 }
 
-// +kubebuilder:validation:Enum=Active;Deleting;Provisioning;Unknown;Updating
+// +kubebuilder:validation:Enum=Active;Deleting;Error;Provisioning;Unknown;Updating
 type Phase string
 
 const (
 	PhaseActive       Phase = "Active"
 	PhaseDeleting     Phase = "Deleting"
+	PhaseError        Phase = "Error"
 	PhaseProvisioning Phase = "Provisioning"
 	PhaseUpdating     Phase = "Updating"
 	PhaseUnknown      Phase = "Unknown"
