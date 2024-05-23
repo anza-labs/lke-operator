@@ -52,7 +52,7 @@ spec:
         args:
         - --leader-elect
         image: ghcr.io/anza-labs/lke-operator:main
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: manager
         securityContext:
           allowPrivilegeEscalation: false
