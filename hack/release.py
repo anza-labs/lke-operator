@@ -201,6 +201,8 @@ def _create_kustomization(resources, image_name, new_tag):
         dict: Kustomization dictionary.
     """
     kustomization = {
+        "namespace": "lke-operator-system",
+        "namePrefix": "lke-operator-",
         "resources": resources,
         "images": [{"name": image_name, "newTag": new_tag}],
     }
