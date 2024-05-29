@@ -23,27 +23,27 @@ import (
 // LKEClusterConfigSpec defines the desired state of an LKEClusterConfig resource.
 type LKEClusterConfigSpec struct {
 	// Region is the geographical region where the LKE cluster will be provisioned.
-	// +kubebuilder:validation:required
+	// +kubebuilder:validation:Required
 	Region string `json:"region"`
 
 	// TokenSecretRef references the Kubernetes secret that stores the Linode API token.
 	// If not provided, then default token will be used.
-	// +kubebuilder:validation:required
+	// +kubebuilder:validation:Required
 	TokenSecretRef SecretRef `json:"tokenSecretRef"`
 
 	// HighAvailability specifies whether the LKE cluster should be configured for high
 	// availability.
-	// +kubebuilder:validation:optional
+	// +kubebuilder:validation:Optional
 	// +kubebuilder:default=false
 	HighAvailability *bool `json:"highAvailability,omitempty"`
 
 	// NodePools contains the specifications for each node pool within the LKE cluster.
-	// +kubebuilder:validation:required
-	// +kubebuilder:validation:minProperties=1
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:MinProperties=1
 	NodePools map[string]LKENodePool `json:"nodePools"`
 
 	// KubernetesVersion indicates the Kubernetes version of the LKE cluster.
-	// +kubebuilder:validation:optional
+	// +kubebuilder:validation:Optional
 	// +kubebuilder:default=latest
 	KubernetesVersion *string `json:"kubernetesVersion,omitempty"`
 }
@@ -57,15 +57,15 @@ type SecretRef struct {
 // LKENodePool represents a pool of nodes within the LKE cluster.
 type LKENodePool struct {
 	// NodeCount specifies the number of nodes in the node pool.
-	// +kubebuilder:validation:required
+	// +kubebuilder:validation:Required
 	NodeCount int `json:"nodeCount"`
 
 	// LinodeType specifies the Linode instance type for the nodes in the pool.
-	// +kubebuilder:validation:required
+	// +kubebuilder:validation:Required
 	LinodeType string `json:"linodeType"`
 
 	// Autoscaler specifies the autoscaling configuration for the node pool.
-	// +kubebuilder:validation:optional
+	// +kubebuilder:validation:Optional
 	Autoscaler *LKENodePoolAutoscaler `json:"autoscaler,omitempty"`
 }
 
@@ -92,46 +92,46 @@ func (l LKENodePool) IsEqual(cmp LKENodePool) bool {
 // LKENodePoolAutoscaler represents the autoscaler configuration for a node pool.
 type LKENodePoolAutoscaler struct {
 	// Min specifies the minimum number of nodes in the pool.
-	// +kubebuilder:validation:required
-	// +kubebuilder:validation:minimum=0
-	// +kubebuilder:validation:maximum=100
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Minimum=0
+	// +kubebuilder:validation:Maximum=100
 	Min int `json:"min"`
 
 	// Max specifies the maximum number of nodes in the pool.
-	// +kubebuilder:validation:required
-	// +kubebuilder:validation:minimum=3
-	// +kubebuilder:validation:maximum=100
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Minimum=3
+	// +kubebuilder:validation:Maximum=100
 	Max int `json:"max"`
 }
 
 // LKEClusterConfigStatus defines the observed state of an LKEClusterConfig resource.
 type LKEClusterConfigStatus struct {
 	// Phase represents the current phase of the LKE cluster.
-	// +kubebuilder:validation:optional
+	// +kubebuilder:validation:Optional
 	// +kubebuilder:default=Unknown
 	Phase *Phase `json:"phase,omitempty"`
 
 	// ClusterID contains the ID of the provisioned LKE cluster.
-	// +kubebuilder:validation:optional
+	// +kubebuilder:validation:Optional
 	ClusterID *int `json:"clusterID,omitempty"`
 
 	// NodePoolStatuses contains the Status of the provisioned node pools within the LKE cluster.
-	// +kubebuilder:validation:optional
+	// +kubebuilder:validation:Optional
 	NodePoolStatuses map[string]NodePoolStatus `json:"nodePoolStatuses,omitempty"`
 
 	// FailureMessage contains an optional failure message for the LKE cluster.
-	// +kubebuilder:validation:optional
+	// +kubebuilder:validation:Optional
 	FailureMessage *string `json:"failureMessage,omitempty"`
 }
 
 // NodePoolStatus
 type NodePoolStatus struct {
 	// ID
-	// +kubebuilder:validation:optional
+	// +kubebuilder:validation:Optional
 	ID *int `json:"id,omitempty"`
 
 	// NodePoolDetails
-	// +kubebuilder:validation:required
+	// +kubebuilder:validation:Required
 	NodePoolDetails LKENodePool `json:"details"`
 }
 

@@ -78,10 +78,14 @@ spec:
                         max:
                           description: Max specifies the maximum number of nodes in
                             the pool.
+                          maximum: 100
+                          minimum: 3
                           type: integer
                         min:
                           description: Min specifies the minimum number of nodes in
                             the pool.
+                          maximum: 100
+                          minimum: 0
                           type: integer
                       required:
                       - max
@@ -101,6 +105,7 @@ spec:
                   type: object
                 description: NodePools contains the specifications for each node pool
                   within the LKE cluster.
+                minProperties: 1
                 type: object
               region:
                 description: Region is the geographical region where the LKE cluster
@@ -149,10 +154,14 @@ spec:
                             max:
                               description: Max specifies the maximum number of nodes
                                 in the pool.
+                              maximum: 100
+                              minimum: 3
                               type: integer
                             min:
                               description: Min specifies the minimum number of nodes
                                 in the pool.
+                              maximum: 100
+                              minimum: 0
                               type: integer
                           required:
                           - max
