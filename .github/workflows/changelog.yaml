@@ -1,0 +1,28 @@
+name: changelog
+
+on:
+  push:
+    tags:
+      - v*
+
+permissions: write-all
+
+jobs:
+  deploy:
+    name: Generate changelog and publish a release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: requarks/changelog-action@v1
+        id: changelog
+        with:
+          token: ${{ github.token }}
+          tag: ${{ github.ref_name }}
+      - uses: ncipollo/release-action@v1.13.0
+        with:
+          allowUpdates: true
+          draft: false
+          makeLatest: true
+          name: ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.changes }}
+          token: ${{ github.token }}
