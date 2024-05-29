@@ -27,7 +27,7 @@ LKEClusterConfig is the Schema for the lkeclusterconfigs API.
 | --- | --- | --- | --- |
 | `apiVersion` _string_ | `lke.anza-labs.dev/v1alpha1` | | |
 | `kind` _string_ | `LKEClusterConfig` | | |
-| `metadata` _[ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/vv1.30/#objectmeta-v1-meta)_ | Refer to Kubernetes API documentation for fields of `metadata`. |  |  |
+| `metadata` _[ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#objectmeta-v1-meta)_ | Refer to Kubernetes API documentation for fields of `metadata`. |  |  |
 | `spec` _[LKEClusterConfigSpec](#lkeclusterconfigspec)_ |  |  |  |
 
 

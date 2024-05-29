@@ -1,0 +1,7 @@
+images:
+- name: ghcr.io/anza-labs/lke-operator
+  newTag: v0.1.0
+resources:
+- ./config/crd
+- ./config/manager
+- ./config/rbac
