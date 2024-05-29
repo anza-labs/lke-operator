@@ -11,10 +11,12 @@ mkdocs = "^1.5.3"
 mkdocs-material = "^9.5.15"
 semver = "^3.0.2"
 mkdocs-nav-weight = "^0.2.0"
+pyyaml = "^6.0.1"
 
 [tool.poetry.scripts]
 publish = 'hack.publish:run'
 report = 'hack.report:run'
+release = 'hack.release:run'
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
