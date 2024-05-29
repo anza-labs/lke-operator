@@ -281,6 +281,6 @@ def run(args=sys.argv) -> None:
         resources=resources, image_name=args.image, new_tag=args.version
     )
     _write_kustomization(kustomization=kustomization, filepath="./kustomization.yaml")
-    make(["manifests", "apidocs"])
+    make(["manifests", "api-docs"])
 
     _release(version, args.version)
