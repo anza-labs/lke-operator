@@ -683,7 +683,7 @@
 <td></td>
 </tr>
 <tr>
-<td><code>metadata</code> <em><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta">ObjectMeta</a></em></td>
+<td><code>metadata</code> <em><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#objectmeta-v1-meta">ObjectMeta</a></em></td>
 <td>Refer to Kubernetes API documentation for fields of <code>metadata</code>.</td>
 <td></td>
 <td></td>
@@ -714,31 +714,31 @@
 <td><code>region</code> <em>string</em></td>
 <td>Region is the geographical region where the LKE cluster will be provisioned.</td>
 <td></td>
-<td></td>
+<td>Required: {} <br /></td>
 </tr>
 <tr>
 <td><code>tokenSecretRef</code> <em><a href="#secretref">SecretRef</a></em></td>
 <td>TokenSecretRef references the Kubernetes secret that stores the Linode API token.<br />If not provided, then default token will be used.</td>
 <td></td>
-<td></td>
+<td>Required: {} <br /></td>
 </tr>
 <tr>
 <td><code>highAvailability</code> <em>boolean</em></td>
 <td>HighAvailability specifies whether the LKE cluster should be configured for high<br />availability.</td>
 <td>false</td>
-<td></td>
+<td>Optional: {} <br /></td>
 </tr>
 <tr>
 <td><code>nodePools</code> <em>object (keys:string, values:<a href="#lkenodepool">LKENodePool</a>)</em></td>
 <td>NodePools contains the specifications for each node pool within the LKE cluster.</td>
 <td></td>
-<td></td>
+<td>MinProperties: 1 <br />Required: {} <br /></td>
 </tr>
 <tr>
 <td><code>kubernetesVersion</code> <em>string</em></td>
 <td>KubernetesVersion indicates the Kubernetes version of the LKE cluster.</td>
 <td>latest</td>
-<td></td>
+<td>Optional: {} <br /></td>
 </tr>
 </tbody>
 </table>
@@ -761,19 +761,19 @@
 <td><code>nodeCount</code> <em>integer</em></td>
 <td>NodeCount specifies the number of nodes in the node pool.</td>
 <td></td>
-<td></td>
+<td>Required: {} <br /></td>
 </tr>
 <tr>
 <td><code>linodeType</code> <em>string</em></td>
 <td>LinodeType specifies the Linode instance type for the nodes in the pool.</td>
 <td></td>
-<td></td>
+<td>Required: {} <br /></td>
 </tr>
 <tr>
 <td><code>autoscaler</code> <em><a href="#lkenodepoolautoscaler">LKENodePoolAutoscaler</a></em></td>
 <td>Autoscaler specifies the autoscaling configuration for the node pool.</td>
 <td></td>
-<td></td>
+<td>Optional: {} <br /></td>
 </tr>
 </tbody>
 </table>
@@ -795,13 +795,13 @@
 <td><code>min</code> <em>integer</em></td>
 <td>Min specifies the minimum number of nodes in the pool.</td>
 <td></td>
-<td></td>
+<td>Maximum: 100 <br />Minimum: 0 <br />Required: {} <br /></td>
 </tr>
 <tr>
 <td><code>max</code> <em>integer</em></td>
 <td>Max specifies the maximum number of nodes in the pool.</td>
 <td></td>
-<td></td>
+<td>Maximum: 100 <br />Minimum: 3 <br />Required: {} <br /></td>
 </tr>
 </tbody>
 </table>
