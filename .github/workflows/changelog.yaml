@@ -18,7 +18,7 @@ jobs:
         with:
           token: ${{ github.token }}
           tag: ${{ github.ref_name }}
-      - uses: ncipollo/release-action@v1.13.0
+      - uses: ncipollo/release-action@v1.14.0
         with:
           allowUpdates: true
           draft: false
