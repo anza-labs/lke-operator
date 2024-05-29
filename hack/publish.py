@@ -109,6 +109,6 @@ def run(args=sys.argv):
         mike(["set-default", "--push", "latest"])
     else:
         if prerelease:
-            mike(["deploy", "--push", "--update-aliases", version])
+            mike(["deploy", "--push", version])
         else:
             mike(["deploy", "--push", "--update-aliases", version, "latest"])
