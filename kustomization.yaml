@@ -1,6 +1,8 @@
 images:
 - name: ghcr.io/anza-labs/lke-operator
-  newTag: v0.1.0
+  newTag: v0.1.1
+namePrefix: lke-operator-
+namespace: lke-operator-system
 resources:
 - ./config/crd
 - ./config/manager
