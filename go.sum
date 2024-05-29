@@ -669,6 +669,7 @@ github.com/kyoh86/exportloopref v0.1.11 h1:1Z0bcmTypkL3Q4k+IDHMWTcnCliEZcaPiIe0/
 github.com/kyoh86/exportloopref v0.1.11/go.mod h1:qkV4UF1zGl6EkF1ox8L5t9SwyeBAZ3qLMd6up458uqA=
 github.com/kyverno/chainsaw v0.2.2 h1:lxVJwkHAc0a67Ax4S0oSqL0/U20T6MCkTq3VCz6b010=
 github.com/kyverno/chainsaw v0.2.2/go.mod h1:m3SZdMHdn77NfWe7knYqmRCsrUTGlEjhTmA/7l/88HM=
+github.com/kyverno/chainsaw v0.2.3/go.mod h1:k4Ejba6yARMh1mPIo3oq+L9UC86yV0CXNXW2eYBmZX4=
 github.com/kyverno/kyverno-json v0.0.3-alpha.2.0.20240418134117-384bc5db5ad7 h1:09UL+pBN0LHYrv22dBmRKAQ0xBKCdkFMTJc0enyTj1o=
 github.com/kyverno/kyverno-json v0.0.3-alpha.2.0.20240418134117-384bc5db5ad7/go.mod h1:RwCdE0qkkKmMTgcci23U0Ffntfdbo5tOS7Ht6YLtxlY=
 github.com/kyverno/pkg/ext v0.0.0-20240418121121-df8add26c55c h1:lAolpR9H8BwM5lRRvgCQ8JowswyxZRH+fgtIQzHFVCk=
