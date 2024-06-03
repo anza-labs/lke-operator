@@ -60,13 +60,12 @@ def mike(args: list[str]) -> None:
     Raises:
         Exception: If Mike command execution returns a non-zero exit code.
     """
-    rc = subprocess.run(
+    subprocess.run(
         ["mike"] + args,
         stdout=sys.stdout,
         stderr=sys.stderr,
+        check=True,
     )
-    if rc.returncode != 0:
-        raise Exception(rc.stderr)
 
 
 def is_initial() -> bool:
@@ -76,9 +75,21 @@ def is_initial() -> bool:
     Returns:
         bool: True if the repository state is initial, False otherwise.
     """
-    rc = subprocess.run(
-        ["git", "show-ref", "--quiet", "refs/heads/gh-pages"],
+    logger.info("fetching gh-pages from origin")
+    subprocess.run(
+        ["git", "remote", "update"],
+        stdout=sys.stdout,
+        stderr=sys.stderr,
     )
+
+    logger.info("getting ref of gh-pages")
+    rc = subprocess.run(
+        ["git", "show-ref", "refs/remotes/origin/gh-pages"],
+        stdout=sys.stdout,
+        stderr=sys.stderr,
+    )
+
+    logger.info(f"returncode={rc.returncode}")
     return rc.returncode != 0
 
 
@@ -105,10 +116,21 @@ def run(args=sys.argv):
 
     version, prerelease = _parse_version(version=args.version)
     if is_initial():
+        logger.info("assuming initial release")
+
+        logger.info("deploing latest")
         mike(["deploy", "--push", "--update-aliases", version, "latest"])
+
+        logger.info("seting default as latest")
         mike(["set-default", "--push", "latest"])
     else:
+        logger.info(
+            f"not an initial release, but prerelease={prerelease} version={version}"
+        )
+
         if prerelease:
+            logger.info("deploying prerelease")
             mike(["deploy", "--push", version])
         else:
+            logger.info("deploying prerelease")
             mike(["deploy", "--push", "--update-aliases", version, "latest"])
