@@ -2,10 +2,8 @@ processor:
   # RE2 regular expressions describing types that should be excluded from the generated documentation.
   ignoreTypes:
     - "(LKEClusterConfig)List$"
-    - "(LKEClusterConfig)Status$"
   # RE2 regular expressions describing type fields that should be excluded from the generated documentation.
   ignoreFields:
-    - "status$"
     - "TypeMeta$"
 
 render:
