@@ -129,8 +129,8 @@ def run(args=sys.argv):
         )
 
         if prerelease:
-            logger.info("deploying prerelease")
+            logger.info(f"deploying prerelease of {version}")
             mike(["deploy", "--push", version])
         else:
-            logger.info("deploying prerelease")
+            logger.info(f"deploying release of {version}")
             mike(["deploy", "--push", "--update-aliases", version, "latest"])
