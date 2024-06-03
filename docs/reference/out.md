@@ -29,6 +29,7 @@ LKEClusterConfig is the Schema for the lkeclusterconfigs API.
 | `kind` _string_ | `LKEClusterConfig` | | |
 | `metadata` _[ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#objectmeta-v1-meta)_ | Refer to Kubernetes API documentation for fields of `metadata`. |  |  |
 | `spec` _[LKEClusterConfigSpec](#lkeclusterconfigspec)_ |  |  |  |
+| `status` _[LKEClusterConfigStatus](#lkeclusterconfigstatus)_ |  |  |  |
 
 
 #### LKEClusterConfigSpec
@@ -49,6 +50,25 @@ _Appears in:_
 | `highAvailability` _boolean_ | HighAvailability specifies whether the LKE cluster should be configured for high<br />availability. | false | Optional: {} <br /> |
 | `nodePools` _object (keys:string, values:[LKENodePool](#lkenodepool))_ | NodePools contains the specifications for each node pool within the LKE cluster. |  | MinProperties: 1 <br />Required: {} <br /> |
 | `kubernetesVersion` _string_ | KubernetesVersion indicates the Kubernetes version of the LKE cluster. | latest | Optional: {} <br /> |
+
+
+#### LKEClusterConfigStatus
+
+
+
+LKEClusterConfigStatus defines the observed state of an LKEClusterConfig resource.
+
+
+
+_Appears in:_
+- [LKEClusterConfig](#lkeclusterconfig)
+
+| Field | Description | Default | Validation |
+| --- | --- | --- | --- |
+| `phase` _[Phase](#phase)_ | Phase represents the current phase of the LKE cluster. | Unknown | Enum: [Active Deleting Error Provisioning Unknown Updating] <br />Optional: {} <br /> |
+| `clusterID` _integer_ | ClusterID contains the ID of the provisioned LKE cluster. |  | Optional: {} <br /> |
+| `nodePoolStatuses` _object (keys:string, values:[NodePoolStatus](#nodepoolstatus))_ | NodePoolStatuses contains the Status of the provisioned node pools within the LKE cluster. |  | Optional: {} <br /> |
+| `failureMessage` _string_ | FailureMessage contains an optional failure message for the LKE cluster. |  | Optional: {} <br /> |
 
 
 #### LKENodePool
@@ -87,7 +107,34 @@ _Appears in:_
 | `max` _integer_ | Max specifies the maximum number of nodes in the pool. |  | Maximum: 100 <br />Minimum: 3 <br />Required: {} <br /> |
 
 
+#### NodePoolStatus
 
+
+
+NodePoolStatus
+
+
+
+_Appears in:_
+- [LKEClusterConfigStatus](#lkeclusterconfigstatus)
+
+| Field | Description | Default | Validation |
+| --- | --- | --- | --- |
+| `id` _integer_ | ID |  | Optional: {} <br /> |
+| `details` _[LKENodePool](#lkenodepool)_ | NodePoolDetails |  | Required: {} <br /> |
+
+
+#### Phase
+
+_Underlying type:_ _string_
+
+
+
+_Validation:_
+- Enum: [Active Deleting Error Provisioning Unknown Updating]
+
+_Appears in:_
+- [LKEClusterConfigStatus](#lkeclusterconfigstatus)
 
 
 
