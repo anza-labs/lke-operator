@@ -30,7 +30,7 @@ jobs:
       - uses: helm/kind-action@v1
         with:
           cluster_name: e2e
-      - uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v6
         with:
           tags: lke-operator:e2e
           build-args: VERSION=e2e
